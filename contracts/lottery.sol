@@ -34,7 +34,10 @@ error Lottery_checkUpKeepfalse(
  * @dev This implements Chainlink VRF V2 & Chainlink Keepers
  */
 
-contract Lottery is VRFConsumerBaseV2 /* Inheritance for overriding the internal function from "./node_modules" */, KeeperCompatibleInterface {
+contract Lottery is
+    VRFConsumerBaseV2 /* Inheritance for overriding the internal function from "./node_modules" */,
+    KeeperCompatibleInterface
+{
     // Type Declaration
     enum LotteryState {
         OPEN,
@@ -64,7 +67,7 @@ contract Lottery is VRFConsumerBaseV2 /* Inheritance for overriding the internal
 
     // Functions
     constructor(
-        address vrfCoordinatorV2,   // contract address
+        address vrfCoordinatorV2, // contract address
         uint256 entranceFee,
         bytes32 gasLane /* or keyHash */,
         uint64 subscriptionId,
@@ -152,7 +155,8 @@ contract Lottery is VRFConsumerBaseV2 /* Inheritance for overriding the internal
             i_callbackGasLimit, // A uint32 which sets gas limit for callback request aka `fulfillRandomWords()`
             NUM_WORDS // a uint32 about how many random number we want to get
         );
-        emit RequestedLotteryWinner(requestId);
+        emit RequestedLotteryWinner(requestId);  // This emit is redundant as its already coded in vrfcoordinatorv2mock
+
     }
 
     // Once requested, do something with it (2/2); Here: Pick a random winner from the player's array and send him the money
@@ -201,13 +205,17 @@ contract Lottery is VRFConsumerBaseV2 /* Inheritance for overriding the internal
 
     function getNumberOfPlayers() public view returns (uint256) {
         return s_players.length;
-    }    
+    }
 
     function getLatestTimeStamp() public view returns (uint256) {
         return s_lastTimeStamp;
-    }  
+    }
 
     function getRequestConfirmations() public pure returns (uint256) {
         return REQUEST_CONFIRMATIONS;
-    }    
+    }
+
+    function getInterval() public view returns (uint256) {
+        return i_interval;
+    }
 }
