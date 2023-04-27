@@ -7,7 +7,8 @@ require("hardhat-gas-reporter");
 require("hardhat-contract-sizer");
 require("dotenv").config();
 
-const SEPOLIA_RPC_URL = process.env.ALCHEMY_SEPOLIA_RPC_URL || "https://eth-sepolia";
+const SEPOLIA_RPC_URL =
+  process.env.ALCHEMY_SEPOLIA_RPC_URL || "https://eth-sepolia";
 const PRIVATE_KEY = process.env.METAMASK_PRIVATE_KEY || "0xkey";
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "key";
 const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY || "key";
@@ -23,7 +24,7 @@ module.exports = {
       chainId: 11155111,
       blockConfirmations: 6,
       url: SEPOLIA_RPC_URL,
-      accounts: [PRIVATE_KEY,]
+      accounts: [PRIVATE_KEY],
     },
   },
   solidity: "0.8.18",

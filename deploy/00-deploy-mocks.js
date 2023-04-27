@@ -2,6 +2,8 @@
 // Initial code is same as "./01-deploy-lottery.js", except the args
 
 const { log } = require("ethers");
+const { network } = require("hardhat");
+
 const { developmentChains } = require("../helper-hardhat-config"); // helpful for mock chain recognition and deployment
 
 const BASE_FEE = ethers.utils.parseEther("0.25"); // 0.25 LINK is the cost for each request (https://docs.chain.link/vrf/v2/subscription/supported-networks#sepolia-testnet)
@@ -16,8 +18,8 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
     // Now deploy a mock vrfCoordinatorV2....
     await deploy("VRFCoordinatorV2Mock", {
       from: deployer,
-      args: [BASE_FEE, GAS_PRICE_LINK], // args taken from the constructor of Chainlink's VRFCoordinatorV2Mock.sol
       log: true,
+      args: [BASE_FEE, GAS_PRICE_LINK], // args taken from the constructor of Chainlink's VRFCoordinatorV2Mock.sol
       waitConfirmations: network.config.blockConfirmations || 1,
     });
 

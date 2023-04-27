@@ -14,7 +14,7 @@ Setup:
     - "deploy" folder and "./01-deploy-lottery.js", "00-deploy-mocks.js"
     - .env
     - "helper-hardhat-config.js"
-    - "test" and "./VRFCoordinatorV2Mock.sol"
+    - "test" folder under "contracts" folder and "./VRFCoordinatorV2Mock.sol"
     - "utils" folder and "./verify.js"
 
     Import:
