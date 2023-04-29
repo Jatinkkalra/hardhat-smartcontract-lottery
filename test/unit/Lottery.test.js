@@ -205,10 +205,10 @@ const { assert, expect } = require("chai");
                   assert.equal(numPlayers.toString(), "0");
                   assert.equal(lotteryState.toString(), "0");
                   assert(endingTimeStamp > startingTimeStamp);
+                  resolve();
                 } catch (e) {
                   reject(e);
                 }
-                resolve();
               });
               // Setting up the listener
 
