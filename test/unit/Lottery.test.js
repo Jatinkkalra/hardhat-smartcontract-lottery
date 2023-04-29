@@ -195,6 +195,7 @@ const { assert, expect } = require("chai");
                   const lotteryState = await lottery.getLotteryState();
                   const endingTimeStamp = await lottery.getLatestTimeStamp();
                   const numPlayers = await lottery.getNumberOfPlayers();
+                  const winnerEndingBalance = await accounts[1].getBalance();
 
                   console.log(recentWinner);
                   console.log(accounts[0].address);
@@ -205,6 +206,15 @@ const { assert, expect } = require("chai");
                   assert.equal(numPlayers.toString(), "0");
                   assert.equal(lotteryState.toString(), "0");
                   assert(endingTimeStamp > startingTimeStamp);
+                  assert.equal(
+                    winnerEndingBalance.toString(),
+                    winnerStartingBalance.add(
+                      raffleEntranceFee
+                        .mul(additionalEntrants)
+                        .add(raffleEntranceFee)
+                        .toString()
+                    )
+                  );
                   resolve();
                 } catch (e) {
                   reject(e);
@@ -215,6 +225,7 @@ const { assert, expect } = require("chai");
               // Below, we will fire the event, and the listener will pick it up, and resolve
               const tx = await lottery.performUpkeep([]);
               const txReceipt = await tx.wait(1);
+              const winnerStartingBalance = await accounts[1].getBalance();
               await vrfCoordinatorV2Mock.fulfillRandomWords(
                 txReceipt.events[1].args.requestId,
                 lottery.address

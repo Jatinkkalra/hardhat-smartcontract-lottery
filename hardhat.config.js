@@ -41,7 +41,11 @@ module.exports = {
     deployer: { default: 0, player: { default: 1 } },
   },
 
+  etherscan: {
+    apiKey: ETHERSCAN_API_KEY,
+  },
+
   mocha: {
     timeout: 200000, // 200K milliseconds or 200 seconds
-  }
+  },
 };

@@ -17,6 +17,8 @@ Setup:
     - "test" folder under "contracts" folder and "./VRFCoordinatorV2Mock.sol"
     - "utils" folder and "./verify.js"
     - "test" folder -> "unit" folder -> "Lottery.test.js"
+    - "test" folder -> "staging" folder -> "lottery.staging.test.js"
+
 
     Import:
     - import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol"; // importing for chainlink varifiable randomness scripts
@@ -40,3 +42,10 @@ Notes:
     - empty bytes data = "0x"
     - describe functions can't recognise promises by itself. Thus there is no need to make it async at the beginning.
     Instead, `it` will use the async functions.
+
+    Staging Test:
+    1. Get our SubId for Chainlink VRF.
+    2. Deploy our contract using SubId.
+    3. Register the contract with Chainlink VRF & it's SudId.
+    4. Register the contract with Chainlink Keepers.
+    5. Run staging tests
