@@ -1,0 +1,51 @@
+Setup:
+    Console:
+    - `yarn add --dev hardhat`
+    - `yarn hardhat -> create an empty hardhat.config.js`
+    - `yarn add --dev @nomiclabs/hardhat-ethers@npm:hardhat-deploy-ethers ethers @nomiclabs/hardhat-etherscan @nomiclabs/hardhat-waffle chai ethereum-waffle hardhat hardhat-contract-sizer hardhat-deploy hardhat-gas-reporter prettier prettier-plugin-solidity solhint solidity-coverage dotenv` (upto dev to choose the tools) 
+    - Basic setup pf "./lottery.sol" and then `yarn hardhat compile` // This creates artifacts and cache folder
+    - `yarn add --dev @chainlink/contracts` // for importing purpose.
+    - `yarn add global hardhat-shorthand`   // for hardhat shortform and autocompletion 
+    For "./package.json" to work, we would need to add them to "./hardhat.config.js"
+
+    Create:
+    - "./.prettierrc"
+    - "contracts" folder and "./lottery.sol"
+    - "deploy" folder and "./01-deploy-lottery.js", "00-deploy-mocks.js"
+    - .env
+    - "helper-hardhat-config.js"
+    - "test" folder under "contracts" folder and "./VRFCoordinatorV2Mock.sol"
+    - "utils" folder and "./verify.js"
+    - "test" folder -> "unit" folder -> "Lottery.test.js"
+    - "test" folder -> "staging" folder -> "lottery.staging.test.js"
+
+
+    Import:
+    - import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol"; // importing for chainlink varifiable randomness scripts
+    - import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";  // importing interface
+
+Notes:
+    Events naming convention: Function name reversed
+    External functions are bit cheaper as they are not called by own contract
+    
+    To pick a random number, a 2 transaction process: 
+    - Request a random number (1/2);
+    - Once requested, do something with it (2/2)
+
+    Hardhat shorthand is an NPM package that autocompletes few commands while using shortforms
+    Eg: `yarn hardhat compile` and `hh compile` both are same now
+
+    Usage of enum, block.timestamp, chainlink's checkUpKeep & performUpKeep
+
+    Tests:
+    - Ideally we make our tests have just 1 assert per "it"
+    - empty bytes data = "0x"
+    - describe functions can't recognise promises by itself. Thus there is no need to make it async at the beginning.
+    Instead, `it` will use the async functions.
+
+    Staging Test:
+    1. Get our SubId for Chainlink VRF.
+    2. Deploy our contract using SubId.
+    3. Register the contract with Chainlink VRF & it's SudId.
+    4. Register the contract with Chainlink Keepers.
+    5. Run staging tests
