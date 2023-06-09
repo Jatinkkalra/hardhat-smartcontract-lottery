@@ -12,7 +12,41 @@
 - [Tests](#tests)
   - [Staging Test](#staging-test)
 
+# Objective
+
+1. Enter the lottery (paying some amount)
+2. Pick a random winner (verifiably random) (Winner to be selected once a parameter is satisfied. Eg: time, asset price, money in liquidity pool etc)
+3. Completely automated winner selection
+
+> The following should be true in order to return true:
+>
+> 1.  Our time internal should have passed
+> 2.  The lottery should have atleast 1 player, and have some ETH
+> 3.  Our subscription is funded with LINK
+> 4.  The lottery should be in an "open" state.
+
+# Steps:
+
+1. Objective 1/3: Enter the Lottery: enterLottery() Function
+
+   - Set minimum amount to enter (immutable variable, set on contract creation via constructor) // get function: getEntranceFee()
+   - Create array of addresses entered // get function: getPlayer(uint256 index)
+
+2. Objective 2/3: Pick a random winner
+
+   - To pick a random number, a 2 transaction process:
+     - Request a random number (1/2): requestRandomWinner() Function (renamed to performUpkeep())
+     - Once requested, do something with it (2/2): fulfillRandomWords() Function
+       - Pick a random winner // getRecentWinner()
+       - Send the money
+       - Keep the list of all winners // emit indexed events WinnerPicked(recentWinner) // (outside the contract, in the logs. As there is no array of winners written yet)
+       - Resetting the entries array, and timestamp
+
+3. Objective (3/3: Completely automated winner selection)
+
 # Setup:
+
+Here I have kept my personal notes on the setup process. Only for personal reference purpose.
 
 ## Extensions
 
@@ -21,8 +55,8 @@
 ## Console Commands
 
 ```js
-yarn add --dev hardhat
-yarn hardhat // create an empty hardhat.config.js
+yarn add --dev hardhat  // Creates node modules, package.json and yarn.lock files
+yarn hardhat // choose "create an empty hardhat.config.js" wgich creates hardhat.config.js file
 yarn add --dev @nomiclabs/hardhat-ethers@npm:hardhat-deploy-ethers ethers @nomiclabs/hardhat-etherscan @nomiclabs/hardhat-waffle chai ethereum-waffle hardhat hardhat-contract-sizer hardhat-deploy hardhat-gas-reporter prettier prettier-plugin-solidity solhint solidity-coverage dotenv // upto the dev to choose the tools/dependencies
 yarn add --dev @chainlink/contracts // for importing purpose.
 yarn add global hardhat-shorthand   // for hardhat shortform and autocompletion
@@ -83,6 +117,13 @@ yarn add global hardhat-shorthand   // for hardhat shortform and autocompletion
   > Eg: `yarn hardhat compile` and `hh compile` both are same now
 
 - Usage of enum, block.timestamp, chainlink's checkUpKeep & performUpKeep
+- Types of variables (s_Storage, i_Immutable, CONSTANT):
+
+  - Storage Variables can be modified.
+  - Constant variables are always fixed for each contract.
+  - Immutable variables are set via constructor during the contract creation.
+
+- Visibility (Public, Private, External, Internal)
 
 # Tests
 
