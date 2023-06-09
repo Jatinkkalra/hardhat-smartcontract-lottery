@@ -31,6 +31,7 @@
 
    - Set minimum amount to enter (immutable variable, set on contract creation via constructor) // get function: getEntranceFee()
    - Create array of addresses entered // get function: getPlayer(uint256 index)
+   - Event declaration
 
 2. Objective 2/3: Pick a random winner
 
@@ -41,8 +42,12 @@
        - Send the money
        - Keep the list of all winners // emit indexed events WinnerPicked(recentWinner) // (outside the contract, in the logs. As there is no array of winners written yet)
        - Resetting the entries array, and timestamp
+   - Event declaration
 
 3. Objective (3/3: Completely automated winner selection)
+   - checkUpkeep
+   - performUpkeep
+   - Event declaration
 
 # Setup:
 
@@ -101,6 +106,21 @@ yarn add global hardhat-shorthand   // for hardhat shortform and autocompletion
 - import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol"; // importing interface
 ```
 
+# Tests
+
+- Ideally we make our tests have just 1 assert per "it"
+- empty bytes data = "0x"
+- describe functions can't recognise promises by itself. Thus there is no need to make it async at the beginning.
+  Instead, `it` will use the async functions.
+
+## Staging Test
+
+1. Get our SubId for Chainlink VRF.
+2. Deploy our contract using SubId.
+3. Register the contract with Chainlink VRF & it's SudId.
+4. Register the contract with Chainlink Keepers.
+5. Run staging tests
+
 # Notes
 
 - Events naming convention: Function name reversed
@@ -125,17 +145,12 @@ yarn add global hardhat-shorthand   // for hardhat shortform and autocompletion
 
 - Visibility (Public, Private, External, Internal)
 
-# Tests
+- Enums:
+  Enums in Solidity are used to create custom data types with a finite set of possible values. Each value in the enum is represented by an integer, starting from 0 for the first value and incrementing by 1 for subsequent values.
+  They provide a more expressive and readable way to work with such values compared to using plain integers or strings.
 
-- Ideally we make our tests have just 1 assert per "it"
-- empty bytes data = "0x"
-- describe functions can't recognise promises by itself. Thus there is no need to make it async at the beginning.
-  Instead, `it` will use the async functions.
+# References
 
-## Staging Test
-
-1. Get our SubId for Chainlink VRF.
-2. Deploy our contract using SubId.
-3. Register the contract with Chainlink VRF & it's SudId.
-4. Register the contract with Chainlink Keepers.
-5. Run staging tests
+- requestRandomWords (in performUpkeep()): https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol
+- fulfillRandomWords: https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src/v0.8/vrf/VRFConsumerBaseV2.sol
+- Automation via Chainlink Keeper (checkUpkeep / performUpkeep): https://docs.chain.link/chainlink-automation/compatible-contracts
