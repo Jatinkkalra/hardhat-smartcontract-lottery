@@ -12,6 +12,7 @@ const GAS_PRICE_LINK = 1e9; // aka 1_000_000_000 // Link per gas || A calculated
 module.exports = async function ({ getNamedAccounts, deployments }) {
   const { deploy, log } = deployments;
   const { deployer } = await getNamedAccounts();
+  const chainId = network.config.chainId;
 
   if (developmentChains.includes(network.name)) {
     console.log("Local network detected (Mock)! Deploying Mocks....");
@@ -19,7 +20,7 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
     await deploy("VRFCoordinatorV2Mock", {
       from: deployer,
       log: true,
-      args: [BASE_FEE, GAS_PRICE_LINK], // args taken from the constructor of Chainlink's VRFCoordinatorV2Mock.sol
+      args: [BASE_FEE, GAS_PRICE_LINK], // args taken from the constructor of Chainlink's VRFCoordinatorV2Mock.sol: https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src/v0.8/mocks/VRFCoordinatorV2Mock.sol
       waitConfirmations: network.config.blockConfirmations || 1,
     });
 

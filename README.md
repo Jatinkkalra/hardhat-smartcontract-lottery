@@ -14,18 +14,21 @@
 
 # Objective
 
+## Contracts
+
+### lottery.sol
+
 1. Enter the lottery (paying some amount)
 2. Pick a random winner (verifiably random) (Winner to be selected once a parameter is satisfied. Eg: time, asset price, money in liquidity pool etc)
 3. Completely automated winner selection
+   > The following should be true in order to return true:
+   >
+   > 1. Our time internal should have passed
+   > 2. The lottery should have atleast 1 player, and have some ETH
+   > 3. Our subscription is funded with LINK
+   > 4. The lottery should be in an "open" state.
 
-> The following should be true in order to return true:
->
-> 1.  Our time internal should have passed
-> 2.  The lottery should have atleast 1 player, and have some ETH
-> 3.  Our subscription is funded with LINK
-> 4.  The lottery should be in an "open" state.
-
-# Steps:
+#### Steps:
 
 1. Objective 1/3: Enter the Lottery: enterLottery() Function
 
@@ -48,6 +51,25 @@
    - checkUpkeep
    - performUpkeep
    - Event declaration
+
+## Deploy Scripts
+
+### 00-deploy-mocks.js
+
+#### Steps:
+
+As constructor of lottery.sol consists a contract "vrfCoordinatorV2" which is outside of our contract, we are going to deploy some mocks for this.
+
+### 01-deploy-lottery.js
+
+#### Steps:
+
+- modify hardhat.config.js
+- create .env file
+- create "helper.hardhat.config": Used to deploy mocks if we are on development chain, and actual contract address if we are on testnet or mainnet.
+  - Configure network and parameter details
+- create "0-deploy-mocks.js" to deploy the mock when not on any development chain (localhost, testnet or mainnet)
+- create "test" folder and "VRFCoordinatorV2Mock.sol" file. Import VRFCoordinatorV2Mock: https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src/v0.8/mocks/VRFCoordinatorV2Mock.sol
 
 # Setup:
 
@@ -152,5 +174,5 @@ yarn add global hardhat-shorthand   // for hardhat shortform and autocompletion
 # References
 
 - requestRandomWords (in performUpkeep()): https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol
-- fulfillRandomWords: https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src/v0.8/vrf/VRFConsumerBaseV2.sol
+- fulfillRandomWords() : https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src/v0.8/vrf/VRFConsumerBaseV2.sol
 - Automation via Chainlink Keeper (checkUpkeep / performUpkeep): https://docs.chain.link/chainlink-automation/compatible-contracts

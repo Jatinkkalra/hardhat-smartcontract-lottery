@@ -10,21 +10,28 @@ const VRF_SUB_FUND_AMOUNT = ethers.utils.parseEther("2");
 module.exports = async function ({ getNamedAccounts, deployments }) {
   const { deploy, log } = deployments;
   const { deployer } = await getNamedAccounts();
-  const chainId = network.config.chainId; // Used here so that chainId of selected network is detected
+  const chainId = network.config.chainId; // Used here so that chainId of the selected development network is detected
 
-  let vrfCoordinatorV2Address, subscriptionId;
+  // Lottery Contract arguments
+  let vrfCoordinatorV2Address, subscriptionId; //  Different for mocknet vs development chains
+  const entranceFee = networkConfig[chainId]["entranceFee"];
+  const gasLane = networkConfig[chainId]["gasLane"];
+  const callbackGasLimit = networkConfig[chainId]["callbackGasLimit"];
+  const interval = networkConfig[chainId]["interval"];
 
+  // Checking if we are deploying mocks or testnet, and acting accordingly
   if (developmentChains.includes(network.name)) {
     console.log("Local network detected (Mock)! Deploying Mocks....");
     // Now deploy a mock vrfCoordinatorV2. First fetch the mock contract address....
     const VRFCoordinatorV2Mock = await ethers.getContract(
       "VRFCoordinatorV2Mock"
-    );
-    vrfCoordinatorV2Address = VRFCoordinatorV2Mock.address;
-    // Getting and Funding the SubscriptionId
-    const transactionResponse = await VRFCoordinatorV2Mock.createSubscription();
+    ); // Fetching mock contract
+    vrfCoordinatorV2Address = VRFCoordinatorV2Mock.address; // Fetching address of mock contract
+
+    // Automating the Fetching and Funding process for the SubscriptionId for mocknet
+    const transactionResponse = await VRFCoordinatorV2Mock.createSubscription(); // function source: https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src/v0.8/mocks/VRFCoordinatorV2Mock.sol
     const transactionReceipt = await transactionResponse.wait(1);
-    subscriptionId = transactionReceipt.events[0].args.subId;
+    subscriptionId = transactionReceipt.events[0].args.subId; // Assigning the subId argument of the first event to the variable
     // Funding the subscription
     await VRFCoordinatorV2Mock.fundSubscription(
       subscriptionId,
@@ -36,11 +43,7 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
     subscriptionId = networkConfig[chainId]["subscriptionId"];
   }
 
-  const entranceFee = networkConfig[chainId]["entranceFee"];
-  const gasLane = networkConfig[chainId]["gasLane"];
-  const callbackGasLimit = networkConfig[chainId]["callbackGasLimit"];
-  const interval = networkConfig[chainId]["interval"];
-
+  // Deploying Lottery Contract
   const lottery = await deploy("Lottery", {
     from: deployer,
     args: [

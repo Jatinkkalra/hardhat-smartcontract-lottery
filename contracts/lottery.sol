@@ -85,7 +85,7 @@ contract Lottery is
     uint256 interval
   ) VRFConsumerBaseV2(vrfCoordinatorV2) {
     i_entranceFee = entranceFee;
-    i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinatorV2);
+    i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinatorV2); // Linking VRF Contract address with Interface(aka functions and events) and assigning it to a variable
     i_gasLane = gasLane;
     i_subscriptionId = subscriptionId;
     i_callbackGasLimit = callbackGasLimit;
