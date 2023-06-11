@@ -70,6 +70,7 @@ As constructor of lottery.sol consists a contract "vrfCoordinatorV2" which is ou
   - Configure network and parameter details
 - create "0-deploy-mocks.js" to deploy the mock when not on any development chain (localhost, testnet or mainnet)
 - create "test" folder and "VRFCoordinatorV2Mock.sol" file. Import VRFCoordinatorV2Mock: https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src/v0.8/mocks/VRFCoordinatorV2Mock.sol
+- create "utils" folder and "./verify.js" file; Used for contract verification in "./01-deploy-lottery.js" file
 
 # Setup:
 
@@ -170,6 +171,15 @@ yarn add global hardhat-shorthand   // for hardhat shortform and autocompletion
 - Enums:
   Enums in Solidity are used to create custom data types with a finite set of possible values. Each value in the enum is represented by an integer, starting from 0 for the first value and incrementing by 1 for subsequent values.
   They provide a more expressive and readable way to work with such values compared to using plain integers or strings.
+
+## Error Handling
+
+```js
+TypeError: Cannot read properties of undefined (reading 'JsonRpcProvider')
+```
+
+Solution:
+`yarn add --dev ethers@5.7.2`
 
 # References
 
