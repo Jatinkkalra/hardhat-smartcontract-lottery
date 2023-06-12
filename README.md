@@ -72,6 +72,14 @@ As constructor of lottery.sol consists a contract "vrfCoordinatorV2" which is ou
 - create "test" folder and "VRFCoordinatorV2Mock.sol" file. Import VRFCoordinatorV2Mock: https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src/v0.8/mocks/VRFCoordinatorV2Mock.sol
 - create "utils" folder and "./verify.js" file; Used for contract verification in "./01-deploy-lottery.js" file
 
+## Tests
+
+### Unit Tests
+
+- Create: "test" folder -> "unit" folder -> "Lottery.test.js" file
+- `yarn hardhat test --grep "functionDescription"` to test out individually.
+- `yarn hardhat coverage` to test out the coverage
+
 # Setup:
 
 Here I have kept my personal notes on the setup process. Only for personal reference purpose.

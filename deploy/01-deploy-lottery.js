@@ -62,6 +62,15 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
     log: true,
     waitConfirmations: network.config.blockConfirmations || 1,
   });
+
+  // In latest version of Chainlink/contracts 0.6.1 or after 0.4.1, we need to add consumer explicitly after deployment of contract
+  if (developmentChains.includes(network.name)) {
+    const VRFCoordinatorV2Mock = await ethers.getContract(
+      "VRFCoordinatorV2Mock"
+    );
+    await VRFCoordinatorV2Mock.addConsumer(subscriptionId, lottery.address);
+    log("Consumer is added");
+  }
   log("------------------------------------------");
 
   // Contract Verification
