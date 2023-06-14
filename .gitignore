@@ -2,5 +2,7 @@ artifacts
 cache
 node_modules
 coverage
-.personal.txt
+deployments
 .env
+.personal.txt
+coverage.json

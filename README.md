@@ -2,6 +2,20 @@
 
 ## Table Of Content
 
+- [Objective](#objective)
+  - [Contracts](#contracts)
+    - [lottery.sol](#lotterysol)
+      - [Steps:](#steps)
+  - [Deploy Scripts](#deploy-scripts)
+    - [00-deploy-mocks.js](#00-deploy-mocksjs)
+      - [Steps:](#steps-1)
+    - [01-deploy-lottery.js](#01-deploy-lotteryjs)
+      - [Steps:](#steps-2)
+  - [Tests](#tests)
+    - [Unit Test](#unit-test)
+      - [Steps:](#steps-3)
+    - [Staging Test](#staging-test)
+      - [Steps:](#steps-4)
 - [Setup:](#setup)
   - [Extensions](#extensions)
   - [Console Commands](#console-commands)
@@ -9,8 +23,9 @@
   - [Command Prompts:](#command-prompts)
   - [Import:](#import)
 - [Notes](#notes)
-- [Tests](#tests)
-  - [Staging Test](#staging-test)
+- [To-Do](#to-do)
+  - [Error Handling](#error-handling)
+- [References](#references)
 
 # Objective
 
@@ -74,11 +89,51 @@ As constructor of lottery.sol consists a contract "vrfCoordinatorV2" which is ou
 
 ## Tests
 
-### Unit Tests
+### Unit Test
 
-- Create: "test" folder -> "unit" folder -> "Lottery.test.js" file
+- Ideally we make our tests have just 1 assert per "it"
+- Explicitly mentioning empty bytes data = `("0x")` or `([])`
+- describe functions can't recognise promises by itself. Thus there is no need to make it async at the beginning.
+  Instead, `it` will use the async functions.
+
+#### Steps:
+
+- Create:
+  - "test" folder
+    - "unit" folder
+      - "Lottery.test.js" file
 - `yarn hardhat test --grep "functionDescription"` to test out individually.
 - `yarn hardhat coverage` to test out the coverage
+
+### Staging Test
+
+Staging tests are run on actual testnet.
+To run tests on a staging/testnet network using Chainlink VRF interface:
+
+```js
+1. Get our SubId for Chainlink VRF, Fund it and update "../helper-hardhat.config.js". // SubId: 1604 (Source: https://vrf.chain.link/)
+2. Deploy our contract using SubId. // `yarn hardhat deploy --network sepolia`
+3. Register the contract & its SudId with Chainlink VRF. // Add consumer here: https://vrf.chain.link/
+4. Register the contract with Chainlink Keepers. // Register new Upkeep here: https://keepers.chain.link/; Starting balance (LINK): 8
+5. Run staging tests // Can be done via etherscan(Write Contract), a deploy script (https://github.com/PatrickAlphaC/hardhat-smartcontract-lottery-fcc/blob/main/scripts/enter.js) or via console(`yarn hardhat test --network sepolia`)
+```
+
+#### Steps:
+
+- Create:
+  - "staging" folder
+    - "lottery.staging.test.js"
+- Most format is taken from the unit test.
+
+#### Verify Sequence of Events
+
+1. User enters lottery (Use contract address on sepolia explorer.)
+   Log example: https://sepolia.etherscan.io/tx/0xbd2337e2060c00ebd2f011496f296cc2d12d603551aecdea220f696d95643a53#eventlog.  
+   Topic 0 = Indentifies the entire event
+   Topic 1 = Indexed Topic which displays the address of the player entered
+2. Keepers.chain.link aka https://automation.chain.link/sepolia sees a performUpkeep transaction (performUpkeep: An internal transaction on seploia explorer)
+3. VRF gets called on https://vrf.chain.link/ (fulfillRandomWords: An internal transaction on seploia explorer)
+4. Winner gets picked, event gets fired and test completes.
 
 # Setup:
 
@@ -137,21 +192,6 @@ yarn add global hardhat-shorthand   // for hardhat shortform and autocompletion
 - import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol"; // importing interface
 ```
 
-# Tests
-
-- Ideally we make our tests have just 1 assert per "it"
-- empty bytes data = "0x"
-- describe functions can't recognise promises by itself. Thus there is no need to make it async at the beginning.
-  Instead, `it` will use the async functions.
-
-## Staging Test
-
-1. Get our SubId for Chainlink VRF.
-2. Deploy our contract using SubId.
-3. Register the contract with Chainlink VRF & it's SudId.
-4. Register the contract with Chainlink Keepers.
-5. Run staging tests
-
 # Notes
 
 - Events naming convention: Function name reversed
@@ -180,10 +220,14 @@ yarn add global hardhat-shorthand   // for hardhat shortform and autocompletion
   Enums in Solidity are used to create custom data types with a finite set of possible values. Each value in the enum is represented by an integer, starting from 0 for the first value and incrementing by 1 for subsequent values.
   They provide a more expressive and readable way to work with such values compared to using plain integers or strings.
 
+- COINMARKETCAP_API_KEY is for gas ouput
+- ETHERSCAN_API_KEY is for contract verification
+
 # To-Do
 
 - Create a Pull-Request for BigNumber and AssertionError for "fulfillRandomWords" testing.
   Reference: https://github.com/smartcontractkit/full-blockchain-solidity-course-js/blob/main/CONTRIBUTING.md
+- Modify the unit test to modularize the winning account in "fulfillRandomWords". Create a PR accordingly.
 
 ## Error Handling
 

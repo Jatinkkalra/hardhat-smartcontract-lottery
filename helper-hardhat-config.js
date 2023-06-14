@@ -13,7 +13,7 @@ const networkConfig = {
     entranceFee: ethers.utils.parseEther("0.01"),
     gasLane:
       "0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c", // gasLane aka 30 gwei Key Hash fetched from: https://docs.chain.link/vrf/v2/subscription/supported-networks#sepolia-testnet
-    subscriptionId: "1604", // to be updated later  // Can also be fetched directly via https://vrf.chain.link/
+    subscriptionId: "1604", // Can be fetched directly via https://vrf.chain.link/
     callbackGasLimit: "500000", // 500K gas limit
     interval: "30", // 30 seconds
   },

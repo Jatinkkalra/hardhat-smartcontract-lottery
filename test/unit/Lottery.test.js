@@ -189,7 +189,7 @@ const { assert, expect } = require("chai");
             const startingTimeStamp = await lottery.getLatestTimeStamp();
 
             // performUpkeep (mock being Chainlink Keepers); kicks off fulfillRandomWords (mock being Chainlink VRF)
-            // To not wait for fulfillRandomWords to be called:
+            // Setting up the listener. (Ideally it should be written before we enter the lottery.)
             await new Promise(async (resolve, reject) => {
               lottery.once("WinnerPicked", async () => {
                 // .once makes you wait to listen for the `WinnerPicked` event and then execute the code below. Functions and "WinnerPicked" event is called at the end.
@@ -223,16 +223,16 @@ const { assert, expect } = require("chai");
                         lotteryEntranceFee
                           .mul(additionalEntrants)
                           .add(lotteryEntranceFee)
-                          // .add(gasCost) // Include gas cost in the calculation
+                        // .add(gasCost) // Include gas cost in the calculation
                       )
                       .toString()
                   );
                   resolve();
                 } catch (e) {
+                  console.log(e);
                   reject(e);
                 }
               });
-              // Setting up the listener
               // Below, we will run the performUpkeep and fulfillRandomWords function, which will fire the event; And the listener will pick it up, and resolve
               const tx = await lottery.performUpkeep([]);
               const txReceipt = await tx.wait(1);
