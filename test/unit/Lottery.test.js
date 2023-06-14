@@ -133,7 +133,7 @@ const { assert, expect } = require("chai");
 
         it("will revert error when checkUpkeep is false", async function () {
           await expect(lottery.performUpkeep([])).to.be.revertedWith(
-            "Lottery_checkUpKeepfalse"
+            "Lottery__checkUpkeepFalse"
           );
         });
         it("updates the lottery state to CALCULATING, emits `RequestedLotteryWinner(requestId)` & calls VRFCoordinatorV2Mock for random words", async function () {
@@ -148,11 +148,11 @@ const { assert, expect } = require("chai");
           const lotteryState = await lottery.getLotteryState();
 
           assert(requestId.toNumber() > 0);
-          assert(lotteryState.toString() == 1);
+          assert(lotteryState.toString() == "1");
         });
       });
 
-      // Tests fullfillRandomWords function
+      // Test: fullfillRandomWords function
       describe("fulfillRandomWords", function () {
         beforeEach(async function () {
           await lottery.enterLottery({ value: lotteryEntranceFee });
@@ -164,7 +164,7 @@ const { assert, expect } = require("chai");
         it("can only be called after performUpkeep", async function () {
           await expect(
             vrfCoordinatorV2Mock.fulfillRandomWords(0, lottery.address)
-          ).to.be.revertedWith("nonexistent request"); // chainlink's vrf function `.fulfillRandomWords`
+          ).to.be.revertedWith("nonexistent request"); // chainlink's vrf function `.fulfillRandomWords`: https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src/v0.8/mocks/VRFCoordinatorV2Mock.sol
 
           await expect(
             vrfCoordinatorV2Mock.fulfillRandomWords(1, lottery.address)
@@ -182,17 +182,17 @@ const { assert, expect } = require("chai");
             i < startingAccountIndex + additionalEntrants;
             i++
           ) {
-            const accountConnectedToLottery = lottery.connect(accounts[i]); // connecting to each account 1 by 1
+            const accountConnectedToLottery = lottery.connect(accounts[i]); // connecting to each account one by one
             await accountConnectedToLottery.enterLottery({
               value: lotteryEntranceFee,
             });
             const startingTimeStamp = await lottery.getLatestTimeStamp();
 
-            // performUpkeep (mock being Chainlink Keepers); kicks of fulfillRandomWords (mock being Chainlink VRF)
-            // to not wait for fulfillRandomWords to be called:
+            // performUpkeep (mock being Chainlink Keepers); kicks off fulfillRandomWords (mock being Chainlink VRF)
+            // To not wait for fulfillRandomWords to be called:
             await new Promise(async (resolve, reject) => {
               lottery.once("WinnerPicked", async () => {
-                // listen for `WinnerPicked` event and then execute the function
+                // .once makes you wait to listen for the `WinnerPicked` event and then execute the code below. Functions and "WinnerPicked" event is called at the end.
                 console.log("Found the event!");
                 try {
                   const recentWinner = await lottery.getRecentWinner();
@@ -201,23 +201,31 @@ const { assert, expect } = require("chai");
                   const numPlayers = await lottery.getNumberOfPlayers();
                   const winnerEndingBalance = await accounts[1].getBalance();
 
-                  console.log(recentWinner);
+                  console.log(recentWinner); // checking recentWinner
                   console.log(accounts[0].address);
                   console.log(accounts[1].address);
                   console.log(accounts[2].address);
                   console.log(accounts[3].address);
 
-                  assert.equal(numPlayers.toString(), "0");
                   assert.equal(lotteryState.toString(), "0");
                   assert(endingTimeStamp > startingTimeStamp);
+                  assert.equal(numPlayers.toString(), "0");
+
+                  // const gasPrice = await network.provider.getGasPrice(); // Fetch the gas price from the network
+                  // const gasPrice = ethers.utils.parseUnits("1", "gwei"); // Set the gas price for testing (1 gwei in this example)
+                  // const gasUsed = txReceipt.gasUsed; // Get the gas used for the transaction
+                  // const gasCost = gasPrice.mul(gasUsed); // Calculate the gas cost
+
                   assert.equal(
                     winnerEndingBalance.toString(),
-                    winnerStartingBalance.add(
-                      raffleEntranceFee
-                        .mul(additionalEntrants)
-                        .add(raffleEntranceFee)
-                        .toString()
-                    )
+                    winnerStartingBalance
+                      .add(
+                        lotteryEntranceFee
+                          .mul(additionalEntrants)
+                          .add(lotteryEntranceFee)
+                          // .add(gasCost) // Include gas cost in the calculation
+                      )
+                      .toString()
                   );
                   resolve();
                 } catch (e) {
@@ -225,15 +233,14 @@ const { assert, expect } = require("chai");
                 }
               });
               // Setting up the listener
-
-              // Below, we will fire the event, and the listener will pick it up, and resolve
+              // Below, we will run the performUpkeep and fulfillRandomWords function, which will fire the event; And the listener will pick it up, and resolve
               const tx = await lottery.performUpkeep([]);
               const txReceipt = await tx.wait(1);
-              const winnerStartingBalance = await accounts[1].getBalance();
+              const winnerStartingBalance = await accounts[1].getBalance(); // fetching winner's starting balance before calling fulfillRandomWords
               await vrfCoordinatorV2Mock.fulfillRandomWords(
                 txReceipt.events[1].args.requestId,
                 lottery.address
-              ); // chainlink's vrf function `.fulfillRandomWords`
+              ); // chainlink's vrf function `.fulfillRandomWords`: https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src/v0.8/mocks/VRFCoordinatorV2Mock.sol
             });
           }
         });

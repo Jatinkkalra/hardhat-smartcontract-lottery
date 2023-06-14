@@ -180,6 +180,11 @@ yarn add global hardhat-shorthand   // for hardhat shortform and autocompletion
   Enums in Solidity are used to create custom data types with a finite set of possible values. Each value in the enum is represented by an integer, starting from 0 for the first value and incrementing by 1 for subsequent values.
   They provide a more expressive and readable way to work with such values compared to using plain integers or strings.
 
+# To-Do
+
+- Create a Pull-Request for BigNumber and AssertionError for "fulfillRandomWords" testing.
+  Reference: https://github.com/smartcontractkit/full-blockchain-solidity-course-js/blob/main/CONTRIBUTING.md
+
 ## Error Handling
 
 ```js

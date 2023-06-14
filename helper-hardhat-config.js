@@ -2,7 +2,7 @@
 // Mostly boiler plate.
 
 // Objective:
-// Used to deploy mocks if we are on development chain, otherwise to deploy actual contract address if we are on local chain, testnet or mainnet
+// Used to deploy mocks if we are on development chain, otherwise to deploy actual contract address if we are on testnet or mainnet
 
 const { ethers } = require("hardhat");
 
