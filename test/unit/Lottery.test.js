@@ -218,14 +218,14 @@ const { assert, expect } = require("chai");
 
                   assert.equal(
                     winnerEndingBalance.toString(),
-                    winnerStartingBalance
-                      .add(
-                        lotteryEntranceFee
-                          .mul(additionalEntrants)
-                          .add(lotteryEntranceFee)
-                        // .add(gasCost) // Include gas cost in the calculation
-                      )
-                      .toString()
+                    winnerStartingBalance.add(
+                      lotteryEntranceFee
+                        .mul(additionalEntrants)
+                        .add(lotteryEntranceFee)
+                        .toString()
+
+                      // .add(gasCost) // Include gas cost in the calculation
+                    )
                   );
                   resolve();
                 } catch (e) {

@@ -23,19 +23,20 @@ async function updateContractAddresses() {
 
   const currentAddresses = JSON.parse(
     fs.readFileSync(FRONT_END_ADDRESSES_FILE, "utf8")
-  );
+  ); // Reads the content of the frontend addresses file and assigns it to `currentAddresses` variable
+
   if (chainId in currentAddresses) {
     if (!currentAddresses[chainId].includes(lottery.address)) {
       currentAddresses[chainId].push(lottery.address);
-    } // adding chainId if not already mentioned in frontend
+    } // adding chainId(key) and address(value) if not already mentioned in frontend [mapping is used]
   }
   {
-    currentAddresses[chainId] = [lottery.address];
+    currentAddresses[chainId] = [lottery.address]; // if chainId doesn't even exist, it will be added
   }
-  fs.writeFileSync(FRONT_END_ADDRESSES_FILE, JSON.stringify(currentAddresses));
+  fs.writeFileSync(FRONT_END_ADDRESSES_FILE, JSON.stringify(currentAddresses)); //  the updated `currentAddresses` object is written back to the frontend addresses file, overwriting the previous content of the file.
 }
 
-async function updateAbi() {    
+async function updateAbi() {
   const lottery = await ethers.getContract("Lottery");
   fs.writeFileSync(
     FRONT_END_ABI_FILE,

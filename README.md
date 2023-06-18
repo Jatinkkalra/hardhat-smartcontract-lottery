@@ -143,7 +143,7 @@ Here I have kept my personal notes on the setup process. Only for personal refer
 
 - [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one "Third-party Markdown extension")
 
-## Console Commands
+## Console Setup Commands
 
 ```js
 yarn add --dev hardhat  // Creates node modules, package.json and yarn.lock files
