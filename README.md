@@ -5,33 +5,40 @@
 - [Objective](#objective)
   - [Contracts](#contracts)
     - [lottery.sol](#lotterysol)
-      - [Steps:](#steps)
+      - [Steps Used:](#steps-used)
   - [Deploy Scripts](#deploy-scripts)
     - [00-deploy-mocks.js](#00-deploy-mocksjs)
-      - [Steps:](#steps-1)
+      - [Steps Used:](#steps-used-1)
     - [01-deploy-lottery.js](#01-deploy-lotteryjs)
-      - [Steps:](#steps-2)
+      - [Steps Used:](#steps-used-2)
   - [Tests](#tests)
     - [Unit Test](#unit-test)
-      - [Steps:](#steps-3)
+      - [Steps Used:](#steps-used-3)
     - [Staging Test](#staging-test)
-      - [Steps:](#steps-4)
-- [Setup:](#setup)
-  - [Extensions](#extensions)
-  - [Console Commands](#console-commands)
+      - [Steps Used:](#steps-used-4)
+  - [Verify Sequence of Events](#verify-sequence-of-events)
+- [Setup](#setup)
+  - [Extensions Used](#extensions-used)
+  - [Console Setup Commands](#console-setup-commands)
   - [Create Folders and Files](#create-folders-and-files)
   - [Command Prompts:](#command-prompts)
-  - [Import:](#import)
+  - [Imports Used:](#imports-used)
 - [Notes](#notes)
 - [To-Do](#to-do)
   - [Error Handling](#error-handling)
+    - [Solution:](#solution)
 - [References](#references)
 
 # Objective
 
+This repo covers a demo Lottery contract.
+Switch to a local chain and try it out yourself here:
+
 ## Contracts
 
 ### lottery.sol
+
+Objective:
 
 1. Enter the lottery (paying some amount)
 2. Pick a random winner (verifiably random) (Winner to be selected once a parameter is satisfied. Eg: time, asset price, money in liquidity pool etc)
@@ -43,7 +50,7 @@
    > 3. Our subscription is funded with LINK
    > 4. The lottery should be in an "open" state.
 
-#### Steps:
+#### Steps Used:
 
 1. Objective 1/3: Enter the Lottery: enterLottery() Function
 
@@ -71,13 +78,13 @@
 
 ### 00-deploy-mocks.js
 
-#### Steps:
+#### Steps Used:
 
 As constructor of lottery.sol consists a contract "vrfCoordinatorV2" which is outside of our contract, we are going to deploy some mocks for this.
 
 ### 01-deploy-lottery.js
 
-#### Steps:
+#### Steps Used:
 
 - modify hardhat.config.js
 - create .env file
@@ -96,7 +103,7 @@ As constructor of lottery.sol consists a contract "vrfCoordinatorV2" which is ou
 - describe functions can't recognise promises by itself. Thus there is no need to make it async at the beginning.
   Instead, `it` will use the async functions.
 
-#### Steps:
+#### Steps Used:
 
 - Create:
   - "test" folder
@@ -118,28 +125,28 @@ To run tests on a staging/testnet network using Chainlink VRF interface:
 5. Run staging tests // Can be done via etherscan(Write Contract), a deploy script (https://github.com/PatrickAlphaC/hardhat-smartcontract-lottery-fcc/blob/main/scripts/enter.js) or via console(`yarn hardhat test --network sepolia`)
 ```
 
-#### Steps:
+#### Steps Used:
 
 - Create:
   - "staging" folder
     - "lottery.staging.test.js"
 - Most format is taken from the unit test.
 
-#### Verify Sequence of Events
+## Verify Sequence of Events
 
 1. User enters lottery (Use contract address on sepolia explorer.)
    Log example: https://sepolia.etherscan.io/tx/0xbd2337e2060c00ebd2f011496f296cc2d12d603551aecdea220f696d95643a53#eventlog.  
    Topic 0 = Indentifies the entire event
    Topic 1 = Indexed Topic which displays the address of the player entered
-2. Keepers.chain.link aka https://automation.chain.link/sepolia sees a performUpkeep transaction (performUpkeep: An internal transaction on seploia explorer)
+2. Keepers.chain.link aka https://automation.chain.link/sepolia sees a performUpkeep transaction (performUpkeep: An internal transaction on sepolia explorer)
 3. VRF gets called on https://vrf.chain.link/ (fulfillRandomWords: An internal transaction on seploia explorer)
 4. Winner gets picked, event gets fired and test completes.
 
-# Setup:
+# Setup
 
-Here I have kept my personal notes on the setup process. Only for personal reference purpose.
+Below is a quick summary of the steps I used to write this repo. Mainly for personal reference only.
 
-## Extensions
+## Extensions Used
 
 - [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one "Third-party Markdown extension")
 
@@ -185,7 +192,7 @@ yarn add global hardhat-shorthand   // for hardhat shortform and autocompletion
 
   > After basic setup of "./lottery.sol". _This creates artifacts and cache folder._
 
-## Import:
+## Imports Used:
 
 ```js
 - import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol"; // importing for chainlink varifiable randomness scripts
@@ -235,7 +242,8 @@ yarn add global hardhat-shorthand   // for hardhat shortform and autocompletion
 TypeError: Cannot read properties of undefined (reading 'JsonRpcProvider')
 ```
 
-Solution:
+### Solution:
+
 `yarn add --dev ethers@5.7.2`
 
 # References
