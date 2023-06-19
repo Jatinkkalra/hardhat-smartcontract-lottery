@@ -32,7 +32,7 @@
 # Objective
 
 This repo covers a demo Lottery contract.
-Switch to a local chain and try it out yourself here:
+Switch to a local chain and try it out yourself here: https://orange-heart-2461.on.fleek.co/ 
 
 ## Contracts
 
